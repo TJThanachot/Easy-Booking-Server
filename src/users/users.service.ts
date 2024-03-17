@@ -5,6 +5,7 @@ import { GoogleDto, LoginDto, ProfileDto } from './dto/utils-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
+import { Roles } from './entities/roles.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()
@@ -14,7 +15,7 @@ export class UsersService {
   ) {}
 
   async register(createUsersDto: CreateUsersDto | GoogleDto) {
-    const user: CreateUsersDto | GoogleDto = createUsersDto;
+    const user: any = createUsersDto;
     if (user.password) {
       const salt = await bcrypt.genSalt(10);
       user.password = await bcrypt.hash(user.password, salt);
@@ -31,16 +32,19 @@ export class UsersService {
 
   async findOneUser(id: string): Promise<any> {
     try {
-      const user: ProfileDto | null = await this.usersRepository.findOne({
+      const user: any = await this.usersRepository.findOne({
         where: {
           id: id,
         },
         select: {
           id: true,
           name: true,
-          phoneNumber: true,
+          phone_number: true,
           email: true,
           nationality: true,
+          role_id: true,
+        },
+        relations: {
           role: true,
         },
       });
@@ -74,15 +78,14 @@ export class UsersService {
   ): Promise<any> {
     let success;
     try {
-      const result: UpdateUsersDto | null =
-        await this.usersRepository.findOneBy({
-          id: id,
-        });
+      const result: any = await this.usersRepository.findOneBy({
+        id: id,
+      });
       if (result) {
         result.email = updateUsersDto.email;
         result.name = updateUsersDto.name;
         result.nationality = updateUsersDto.nationality;
-        result.phoneNumber = updateUsersDto.phoneNumber;
+        result.phone_number = updateUsersDto.phone_number;
         result.updated_at = new Date();
         success = await this.usersRepository.save(result);
       }
@@ -97,7 +100,6 @@ export class UsersService {
   async remove(id: string): Promise<any> {
     try {
       const { affected } = await this.usersRepository.delete({ id });
-
       return affected
         ? { message: `Deleted a #${id} user profile success` }
         : { message: `Not found a #${id} user profile.` };
@@ -107,6 +109,10 @@ export class UsersService {
   }
 
   findAll(): Promise<Users[]> {
-    return this.usersRepository.find();
+    return this.usersRepository.find({
+      relations: {
+        role: true,
+      },
+    });
   }
 }

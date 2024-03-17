@@ -1,35 +1,46 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
-import { v4 as uuidv4 } from 'uuid';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  OneToOne,
+} from 'typeorm';
+import { Roles } from './roles.entity'; // Import the Roles entity
 
-@Entity()
+@Entity('users')
 export class Users {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 100 })
+  @Column({ length: 30 })
   password: string;
 
-  @Column({ name: 'name', length: 30 })
+  @Column({ length: 30 })
   name: string;
 
-  @Column({ name: 'phone_number', length: 15 })
-  phoneNumber: string;
+  @Column({ length: 15 })
+  phone_number: string;
 
-  @Column({ length: 20, unique: true })
+  @Column({ length: 20 })
   email: string;
 
   @Column({ length: 15 })
   nationality: string;
 
-  @Column()
-  role: number;
+  @Column({ name: 'role_id' })
+  role_id: number;
 
-  @Column({ name: 'created_at', type: 'timestamp' })
+  @ManyToOne(() => Roles, (roles) => roles.users)
+  @JoinColumn({ name: 'role_id' })
+  role: Roles;
+
+  @Column({ length: 45, nullable: true })
+  google_id: string;
+
+  @Column({ type: 'timestamp' })
   created_at: Date;
 
-  @Column({ name: 'updated_at', type: 'timestamp' })
+  @Column({ type: 'timestamp' })
   updated_at: Date;
-
-  @Column({ length: 45, unique: true })
-  googleId: string;
 }

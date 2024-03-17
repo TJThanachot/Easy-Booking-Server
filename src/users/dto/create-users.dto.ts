@@ -3,10 +3,10 @@ export class CreateUsersDto {
   id: string;
   password: string;
   name: string;
-  phoneNumber: string;
+  phone_number: string;
   email: string;
   nationality: string;
-  role: number;
+  role_id: number;
   created_at: Date;
   updated_at: Date;
 
