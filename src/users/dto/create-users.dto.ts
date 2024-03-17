@@ -1,16 +1,14 @@
 import { Users } from '../entities/user.entity';
 export class CreateUsersDto {
-  readonly id: string;
-  readonly username: string;
+  id: string;
   password: string;
-  readonly firstName: string;
-  readonly lastName: string;
-  readonly phoneNumber: string;
-  readonly email: string;
-  readonly nationality: string;
-  readonly role: number;
-  createdAt: Date;
-  updatedAt: Date;
+  name: string;
+  phoneNumber: string;
+  email: string;
+  nationality: string;
+  role: number;
+  created_at: Date;
+  updated_at: Date;
 
   // constructor(entity: Users) {
   //   this.id = entity.id;

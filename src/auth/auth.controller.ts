@@ -1,6 +1,9 @@
-import { Controller, Post, UseGuards, Request } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Controller, Get, Post, UseGuards, Request, Res } from '@nestjs/common';
 import { LocalAuthGuard } from './local-auth.guard';
+import { GoogleAuthGuard } from './google-auth.guard';
+
+import { Response } from 'express';
 
 @Controller('auth')
 export class AuthController {
@@ -8,7 +11,43 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async validate(@Request() req: any) {
-    return req.user;
+  async validate(@Request() req: any, @Res({ passthrough: true }) res: any) {
+    const { accessToken } = await this.authService.login(req.user);
+    if (accessToken) {
+      res.cookie('access_token', accessToken, {
+        httpOnly: true,
+      });
+      res.json({ message: 'Successfully logged in' });
+    } else {
+      return null;
+    }
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google')
+  async googleAuth(@Request() req: any) {
+    // Initiates the Google OAuth process
+  }
+
+  @UseGuards(GoogleAuthGuard)
+  @Get('google/callback')
+  async googleAuthRedirect(
+    @Request() req: any,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const { accessToken } = await this.authService.googleLogin(req);
+
+    res.cookie('access_token', accessToken, {
+      httpOnly: true,
+    });
+    res.redirect('/users/profile');
+  }
+
+  @Get('logout')
+  async logout(@Request() req: any, @Res() res: Response) {
+    res.clearCookie('access_token', {
+      httpOnly: true,
+    });
+    res.json({ message: 'Successfully logged out' });
   }
 }

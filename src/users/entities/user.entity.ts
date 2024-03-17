@@ -6,17 +6,11 @@ export class Users {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ length: 20, unique: true })
-  username: string;
-
   @Column({ length: 100 })
   password: string;
 
-  @Column({ name: 'first_name', length: 20 })
-  firstName: string;
-
-  @Column({ name: 'last_name', length: 20 })
-  lastName: string;
+  @Column({ name: 'name', length: 30 })
+  name: string;
 
   @Column({ name: 'phone_number', length: 15 })
   phoneNumber: string;
@@ -31,8 +25,11 @@ export class Users {
   role: number;
 
   @Column({ name: 'created_at', type: 'timestamp' })
-  createdAt: Date;
+  created_at: Date;
 
   @Column({ name: 'updated_at', type: 'timestamp' })
-  updatedAt: Date;
+  updated_at: Date;
+
+  @Column({ length: 45, unique: true })
+  googleId: string;
 }
