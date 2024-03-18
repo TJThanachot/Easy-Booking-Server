@@ -5,7 +5,6 @@ import { GoogleDto, LoginDto, ProfileDto } from './dto/utils-users.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Users } from './entities/user.entity';
-import { Roles } from './entities/roles.entity';
 import * as bcrypt from 'bcrypt';
 
 @Injectable()

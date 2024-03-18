@@ -8,6 +8,7 @@ import { DataSource } from 'typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { TransectionModule } from './transection/transection.module';
 
 @Module({
   imports: [
@@ -29,6 +30,7 @@ import { AuthModule } from './auth/auth.module';
     BookingModule,
     UsersModule,
     AuthModule,
+    TransectionModule,
   ],
   controllers: [AppController],
   providers: [AppService],

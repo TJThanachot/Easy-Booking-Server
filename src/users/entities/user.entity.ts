@@ -4,14 +4,31 @@ import {
   Column,
   ManyToOne,
   JoinColumn,
-  OneToOne,
+  OneToMany,
 } from 'typeorm';
-import { Roles } from './roles.entity'; // Import the Roles entity
-
+import { Roles } from './roles.entity';
+import { Bookings } from 'src/booking/entities/booking.entity';
+import { Transections } from 'src/transection/entities/transection.entity';
 @Entity('users')
 export class Users {
   @PrimaryGeneratedColumn('uuid')
   id: string;
+  //send PK to Bookings
+  @OneToMany(() => Bookings, (bookings) => bookings.user_id)
+  bookings: Bookings[];
+
+  //send PK to Bookings
+  @OneToMany(() => Transections, (transections) => transections.user_id)
+  transections: Transections[];
+
+  // FK role_id
+  @Column({ name: 'role_id' })
+  role_id: number;
+
+  @ManyToOne(() => Roles, (roles) => roles.users)
+  @JoinColumn({ name: 'role_id' })
+  role: Roles;
+  // end FK role_id
 
   @Column({ length: 30 })
   password: string;
@@ -27,13 +44,6 @@ export class Users {
 
   @Column({ length: 15 })
   nationality: string;
-
-  @Column({ name: 'role_id' })
-  role_id: number;
-
-  @ManyToOne(() => Roles, (roles) => roles.users)
-  @JoinColumn({ name: 'role_id' })
-  role: Roles;
 
   @Column({ length: 45, nullable: true })
   google_id: string;
