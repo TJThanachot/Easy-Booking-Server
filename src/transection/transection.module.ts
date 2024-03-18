@@ -2,10 +2,11 @@ import { Module } from '@nestjs/common';
 import { TransectionService } from './transection.service';
 import { TransectionController } from './transection.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Transection } from './entities/transection.entity';
+import { Transections } from './entities/transection.entity';
+import { PaidTypes } from './entities/paidTypes.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Transection])],
+  imports: [TypeOrmModule.forFeature([Transections, PaidTypes])],
   controllers: [TransectionController],
   providers: [TransectionService],
 })
