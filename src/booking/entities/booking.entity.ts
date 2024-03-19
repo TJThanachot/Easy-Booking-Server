@@ -12,7 +12,7 @@ import { StatusLookups } from './statusLookups.entity';
 import { Transections } from 'src/transection/entities/transection.entity';
 @Entity('bookings')
 export class Bookings {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ type: 'int', name: 'id' })
   id: number;
   //send PK to Transections
   @OneToMany(() => Transections, (transections) => transections.booking_id)
@@ -20,7 +20,7 @@ export class Bookings {
 
   //   FK user_id
   @Column({ name: 'user_id' })
-  user_id: number;
+  user_id: string;
 
   @ManyToOne(() => Users, (users) => users.bookings)
   @JoinColumn({ name: 'user_id' })
@@ -28,7 +28,7 @@ export class Bookings {
   //  end FK user_id
 
   // FK room_id
-  @Column({ name: 'room_id' })
+  @Column({ name: 'room_id', type: 'int' })
   room_id: number;
 
   @ManyToOne(() => Rooms, (rooms) => rooms.bookings)
