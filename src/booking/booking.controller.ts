@@ -7,6 +7,8 @@ import {
   Delete,
   UseGuards,
   Res,
+  Request,
+  UsePipes,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
@@ -17,9 +19,21 @@ export class BookingController {
   constructor(private readonly bookingService: BookingService) {}
 
   @UseGuards(JwtAuthGuard)
-  @Post()
-  create(@Body() createBookingDto: CreateBookingDto) {
-    return this.bookingService.create(createBookingDto);
+  @Post('create-booking')
+  async create(
+    @Request() req: any,
+    @Body() createBookingDto: CreateBookingDto,
+  ) {
+    return await this.bookingService.create(req.user.userId, createBookingDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('update-booking')
+  async update(
+    @Request() req: any,
+    @Body() updateBookingDto: UpdateBookingDto,
+  ) {
+    return await this.bookingService.update(req.user.userId, updateBookingDto);
   }
 
   @Get()
@@ -28,17 +42,12 @@ export class BookingController {
   }
 
   @Get(':id')
-  findOne( id: string) {
+  findOne(id: string) {
     return this.bookingService.findOne(+id);
   }
 
-  @Put(':id')
-  update( id: string, @Body() updateBookingDto: UpdateBookingDto) {
-    return this.bookingService.update(+id, updateBookingDto);
-  }
-
   @Delete(':id')
-  remove( id: string) {
+  remove(id: string) {
     return this.bookingService.remove(+id);
   }
 }
