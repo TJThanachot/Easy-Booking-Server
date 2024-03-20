@@ -8,7 +8,7 @@ import {
 import { Rooms } from './rooms.entity';
 import { Images } from './images.entity';
 
-@Entity('roomImages')
+@Entity('room_images')
 export class RoomsImages {
   @PrimaryGeneratedColumn()
   id: number;

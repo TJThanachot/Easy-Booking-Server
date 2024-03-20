@@ -24,7 +24,7 @@ export class AuthService {
           ? { message: `Invalid Email` }
           : { message: `Invalid Password` };
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 

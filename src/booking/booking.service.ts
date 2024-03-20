@@ -1,9 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { FindByCheckInCheckOutDto } from './dto/utils-booking.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bookings } from './entities/booking.entity';
-import { Repository } from 'typeorm';
+import { Repository, ILike, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+
 @Injectable()
 export class BookingService {
   constructor(
@@ -19,7 +21,7 @@ export class BookingService {
     booking.user_id = userId;
     booking.created_at = new Date();
     booking.updated_at = new Date();
-    booking.status_lookup_id = 5; //status 5 booked and 6 draft
+    booking.status_lookup_id = 5; //status 5 booked, 6 draft and 7 close
     try {
       const result = await this.bookingsRepository.insert(createBookingDto);
       if (result.raw.affectedRows > 0) {
@@ -52,15 +54,64 @@ export class BookingService {
     }
   }
 
-  findAll() {
-    return `This action returns all booking`;
+  async findAll(userId: string): Promise<any> {
+    try {
+      const result: Bookings[] | null = await this.bookingsRepository.find({
+        where: { user_id: userId },
+        relations: ['rooms', 'statusLookups'],
+      });
+      return result
+        ? { bookingList: result, message: 'Get all your bookings successful' }
+        : { message: 'Not found any bookings!' };
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} booking`;
+  async remove(userId: string, bookingId: number) {
+    try {
+      const result: any = await this.bookingsRepository.delete({
+        id: bookingId,
+        user_id: userId,
+      });
+      return result?.affected > 0
+        ? { message: `Removed a #${bookingId} booking id` }
+        : { message: `Not found a #${bookingId} booking id` };
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} booking`;
+  async findByKeyWords(
+    userId: string,
+    findByCheckInCheckOut: FindByCheckInCheckOutDto,
+  ) {
+    const key = {
+      user_id: userId,
+    };
+    const { check_in, check_out } = findByCheckInCheckOut;
+    try {
+      const result: Bookings[] = await this.bookingsRepository.find({
+        where: [
+          {
+            check_in: MoreThanOrEqual(new Date(check_in)),
+            ...key,
+          },
+          {
+            check_out: LessThanOrEqual(new Date(check_out)),
+            ...key,
+          },
+        ],
+        relations: ['rooms', 'statusLookups'],
+      });
+      return result
+        ? {
+            bookingList: result,
+            message: 'Get your bookings by keywords successful',
+          }
+        : { message: 'Not found any bookings!' };
+    } catch (error) {
+      throw new Error(error);
+    }
   }
 }
