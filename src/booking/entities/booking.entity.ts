@@ -28,7 +28,7 @@ export class Bookings {
   //  end FK user_id
 
   // FK room_id
-  @Column({ name: 'room_id', type: 'int' })
+  @Column({ name: 'room_id' })
   room_id: number;
 
   @ManyToOne(() => Rooms, (rooms) => rooms.bookings)

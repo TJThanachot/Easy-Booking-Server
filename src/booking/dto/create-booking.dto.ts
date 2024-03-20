@@ -12,13 +12,15 @@ export class CreateBookingDto {
   user_id: string;
   check_in: Date;
   check_out: Date;
+  @IsNumber()
   total_price: number;
+  @IsNumber()
   total_people: number;
-
   @IsNumber()
   room_id: number;
-
+  @IsString()
   description: string;
+  @IsNumber()
   status_lookup_id: number;
   created_at: Date;
   updated_at: Date;

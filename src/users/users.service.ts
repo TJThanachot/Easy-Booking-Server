@@ -25,7 +25,7 @@ export class UsersService {
       await this.usersRepository.insert(user);
       return { message: 'Register success' };
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 
@@ -49,7 +49,7 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 
@@ -67,7 +67,7 @@ export class UsersService {
       });
       return user;
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 
@@ -92,7 +92,7 @@ export class UsersService {
         ? { message: `Updated a #${id} user profile success` }
         : { message: `Not found a #${id} user profile.` };
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 
@@ -103,7 +103,7 @@ export class UsersService {
         ? { message: `Deleted a #${id} user profile success` }
         : { message: `Not found a #${id} user profile.` };
     } catch (error) {
-      return { message: error };
+      throw new Error(error);
     }
   }
 

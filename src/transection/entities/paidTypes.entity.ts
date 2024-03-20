@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Transections } from './transection.entity';
 
-@Entity('paidTypes')
+@Entity('paid_types')
 export class PaidTypes {
   @PrimaryGeneratedColumn()
   id: number;

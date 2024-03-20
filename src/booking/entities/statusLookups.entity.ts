@@ -3,7 +3,7 @@ import { Bookings } from './booking.entity';
 import { Rooms } from './rooms.entity';
 import { Transections } from 'src/transection/entities/transection.entity';
 
-@Entity('statusLookups')
+@Entity('status_lookups')
 export class StatusLookups {
   @PrimaryGeneratedColumn()
   id: number;

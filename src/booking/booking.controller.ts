@@ -6,13 +6,14 @@ import {
   Put,
   Delete,
   UseGuards,
-  Res,
+  Param,
   Request,
   UsePipes,
 } from '@nestjs/common';
 import { BookingService } from './booking.service';
 import { CreateBookingDto } from './dto/create-booking.dto';
 import { UpdateBookingDto } from './dto/update-booking.dto';
+import { FindByCheckInCheckOutDto } from './dto/utils-booking.dto';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 @Controller('booking')
 export class BookingController {
@@ -36,18 +37,27 @@ export class BookingController {
     return await this.bookingService.update(req.user.userId, updateBookingDto);
   }
 
-  @Get()
-  findAll() {
-    return this.bookingService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @Get('your-booking')
+  async findAll(@Request() req: any) {
+    return this.bookingService.findAll(req.user.userId);
   }
 
-  @Get(':id')
-  findOne(id: string) {
-    return this.bookingService.findOne(+id);
+  @UseGuards(JwtAuthGuard)
+  @Get('search-a-booking')
+  async findByKeyWords(
+    @Request() req: any,
+    @Body() findByCheckInCheckOutDto: FindByCheckInCheckOutDto,
+  ) {
+    return this.bookingService.findByKeyWords(
+      req.user.userId,
+      findByCheckInCheckOutDto,
+    );
   }
 
-  @Delete(':id')
-  remove(id: string) {
-    return this.bookingService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  @Delete('delete-a-booking/:bookingId')
+  async remove(@Request() req: any, @Param() param: any) {
+    return await this.bookingService.remove(req.user.userId, param.bookingId);
   }
 }
