@@ -55,13 +55,14 @@ export class UsersService {
 
   async findEmail(email: string): Promise<any> {
     try {
-      const user: LoginDto | null = await this.usersRepository.findOne({
+      const user: any = await this.usersRepository.findOne({
         where: {
           email: email,
         },
         select: {
           email: true,
           password: true,
+          role_id: true,
           id: true,
         },
       });

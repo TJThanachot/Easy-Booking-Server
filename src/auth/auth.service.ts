@@ -13,12 +13,12 @@ export class AuthService {
 
   async validateUser(email: string, password: string): Promise<any> {
     try {
-      const user: LoginDto = await this.usersService.findEmail(email);
-
+      const user: any = await this.usersService.findEmail(email);
       return user && (await bcrypt.compare(password, user.password))
         ? {
             email: user.email,
             userId: user.id,
+            roleId: user.role_id,
           }
         : !user
           ? { message: `Invalid Email` }
@@ -29,7 +29,11 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = { email: user.email, sub: user.userId };
+    const payload = {
+      email: user.email,
+      sub: user.userId,
+      roleId: user.roleId,
+    };
     return {
       accessToken: this.jwtService.sign(payload),
     };
