@@ -1,5 +1,5 @@
 import { Bookings } from 'src/booking/entities/booking.entity';
-import { StatusLookups } from 'src/booking/entities/statusLookups.entity';
+// import { StatusLookups } from 'src/booking/entities/statusLookups.entity';
 import { Users } from 'src/users/entities/user.entity';
 import {
   Entity,
@@ -17,7 +17,7 @@ export class Transections {
 
   //   FK user_id
   @Column({ name: 'user_id' })
-  user_id: number;
+  user_id: string;
 
   @ManyToOne(() => Users, (users) => users.transections)
   @JoinColumn({ name: 'user_id' })
@@ -30,16 +30,16 @@ export class Transections {
 
   @ManyToOne(() => Bookings, (booking) => booking.transections)
   @JoinColumn({ name: 'booking_id' })
-  booking: Bookings;
+  bookings: Bookings;
   //  end FK booking_id
 
   //FK status_lookup_id
-  @Column({ name: 'status_lookup_id' })
-  status_lookup_id: number;
+  // @Column({ name: 'status_lookup_id' })
+  // status_lookup_id: number;
 
-  @ManyToOne(() => StatusLookups, (status_lookup) => status_lookup.transections)
-  @JoinColumn({ name: 'status_lookup_id' })
-  statusLookups: StatusLookups;
+  // @ManyToOne(() => StatusLookups, (status_lookup) => status_lookup.transections)
+  // @JoinColumn({ name: 'status_lookup_id' })
+  // statusLookups: StatusLookups;
   // end FK status_lookup_id
 
   //FK paid_type_id

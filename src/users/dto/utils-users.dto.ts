@@ -1,6 +1,7 @@
 export class LoginDto {
   email: string;
   password: string;
+  roleId: number;
   id: string;
 }
 

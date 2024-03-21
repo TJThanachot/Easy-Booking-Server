@@ -20,6 +20,10 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   async validate(payload: any): Promise<any> {
     // This payload will be the decrypted token payload you provided when signing the token
-    return { email: payload.email, userId: payload.sub };
+    return {
+      email: payload.email,
+      userId: payload.sub,
+      roleId: payload.roleId,
+    };
   }
 }

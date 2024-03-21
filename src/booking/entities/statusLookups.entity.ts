@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
 import { Bookings } from './booking.entity';
 import { Rooms } from './rooms.entity';
-import { Transections } from 'src/transection/entities/transection.entity';
+// import { Transections } from 'src/transection/entities/transection.entity';
 
 @Entity('status_lookups')
 export class StatusLookups {
@@ -16,11 +16,11 @@ export class StatusLookups {
   rooms: Rooms[];
 
   //send PK to Transections
-  @OneToMany(
-    () => Transections,
-    (transections) => transections.status_lookup_id,
-  )
-  transections: Transections[];
+  // @OneToMany(
+  //   () => Transections,
+  //   (transections) => transections.status_lookup_id,
+  // )
+  // transections: Transections[];
 
   @Column({ length: 15 })
   type: string;
