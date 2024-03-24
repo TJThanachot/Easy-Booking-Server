@@ -5,12 +5,19 @@ import { FindByCheckInCheckOutDto } from './dto/utils-booking.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Bookings } from './entities/booking.entity';
 import { Repository, ILike, MoreThanOrEqual, LessThanOrEqual } from 'typeorm';
+import { RoomTypes } from './entities/roomTypes.entity';
+import { Rooms } from './entities/rooms.entity';
+import { calTotalPrice, mapRoomtype } from 'src/utils/funcUtils';
 
 @Injectable()
 export class BookingService {
   constructor(
     @InjectRepository(Bookings)
     private bookingsRepository: Repository<Bookings>,
+    @InjectRepository(RoomTypes)
+    private roomTypesRepository: Repository<RoomTypes>,
+    @InjectRepository(Rooms)
+    private roomsRepository: Repository<Rooms>,
   ) {}
 
   async create(
@@ -18,14 +25,34 @@ export class BookingService {
     createBookingDto: CreateBookingDto,
   ): Promise<any> {
     const booking = createBookingDto;
-    booking.user_id = userId;
-    booking.created_at = new Date();
-    booking.updated_at = new Date();
-    booking.status_lookup_id = 5; //status 5 booked, 6 draft and 7 close
+    let roomName: string = '';
     try {
-      const result = await this.bookingsRepository.insert(createBookingDto);
+      const findAvailableRoom = await this.roomsRepository.findOne({
+        where: {
+          status_lookup_id: 2, //status 1 booked, 2 available, 3 unavailable
+          room_type_id: mapRoomtype(booking.description), // comfrom funcUtils
+        },
+      });
+      if (findAvailableRoom) {
+        booking.user_id = userId;
+        booking.created_at = new Date();
+        booking.updated_at = new Date();
+        booking.status_lookup_id = 5; //status 5 booked, 6 draft and 7 close
+        booking.room_id = findAvailableRoom?.id;
+        booking.total_price = calTotalPrice(
+          booking.check_in,
+          booking.check_out,
+          booking.price_per_night,
+        ); // comfrom funcUtils
+        roomName = findAvailableRoom?.room_name;
+        findAvailableRoom.status_lookup_id = 1; //status 1 booked, 2 available, 3 unavailable
+        await this.roomsRepository.save(findAvailableRoom);
+      }
+      const result = await this.bookingsRepository.insert(booking);
       if (result.raw.affectedRows > 0) {
-        return { message: 'Booking saved successfully.' };
+        return {
+          message: `Booking saved successfully and your room is ${roomName}.`,
+        };
       }
       return { message: 'Booking saved unsuccessfully.' };
     } catch (error) {
@@ -110,6 +137,17 @@ export class BookingService {
             message: 'Get your bookings by keywords successful',
           }
         : { message: 'Not found any bookings!' };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async findRoomTypes(): Promise<any> {
+    try {
+      const result: any = await this.roomTypesRepository.find();
+      return result
+        ? { roomTypesList: result, message: 'Get all room types successful' }
+        : { message: 'Not found any room types!' };
     } catch (error) {
       throw new Error(error);
     }
