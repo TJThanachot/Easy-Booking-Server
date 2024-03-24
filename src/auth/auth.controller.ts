@@ -17,7 +17,7 @@ export class AuthController {
       res.cookie('access_token', accessToken, {
         httpOnly: true,
       });
-      res.json({ message: 'Successfully logged in' });
+      res.json({ message: 'Successfully logged in', accessToken });
     } else {
       return null;
     }

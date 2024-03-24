@@ -13,6 +13,8 @@ export class CreateBookingDto {
   check_in: Date;
   check_out: Date;
   @IsNumber()
+  price_per_night: number;
+  @IsNumber()
   total_price: number;
   @IsNumber()
   total_people: number;

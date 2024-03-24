@@ -21,10 +21,7 @@ export class BookingController {
 
   @UseGuards(JwtAuthGuard)
   @Post('create-booking')
-  async create(
-    @Request() req: any,
-    @Body() createBookingDto: CreateBookingDto,
-  ) {
+  async create(@Request() req: any, @Body() createBookingDto: any) {
     return await this.bookingService.create(req.user.userId, createBookingDto);
   }
 
@@ -59,5 +56,10 @@ export class BookingController {
   @Delete('delete-a-booking/:bookingId')
   async remove(@Request() req: any, @Param() param: any) {
     return await this.bookingService.remove(req.user.userId, param.bookingId);
+  }
+
+  @Get('room-types')
+  async findRoomTypes() {
+    return this.bookingService.findRoomTypes();
   }
 }

@@ -25,7 +25,7 @@ export class UsersService {
       await this.usersRepository.insert(user);
       return { message: 'Register success' };
     } catch (error) {
-      throw new Error(error);
+      return { message: 'This email is used.' };
     }
   }
 
