@@ -86,6 +86,7 @@ export class BookingService {
       const result: Bookings[] | null = await this.bookingsRepository.find({
         where: { user_id: userId },
         relations: ['rooms', 'statusLookups'],
+        order: { created_at: 'DESC' },
       });
       return result
         ? { bookingList: result, message: 'Get all your bookings successful' }
