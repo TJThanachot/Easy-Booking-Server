@@ -81,15 +81,24 @@ export class BookingService {
     }
   }
 
-  async findAll(userId: string): Promise<any> {
+  async findAll(userId: string, pageNumber: number): Promise<any> {
+    const limit: number = 3;
+    const skip: number = Number((pageNumber - 1) * limit);
     try {
-      const result: Bookings[] | null = await this.bookingsRepository.find({
-        where: { user_id: userId },
-        relations: ['rooms', 'statusLookups'],
-        order: { created_at: 'DESC' },
-      });
+      const [result, count]: any | null =
+        await this.bookingsRepository.findAndCount({
+          where: { user_id: userId },
+          relations: ['rooms', 'statusLookups'],
+          order: { created_at: 'DESC' },
+          take: limit,
+          skip: skip,
+        });
       return result
-        ? { bookingList: result, message: 'Get all your bookings successful' }
+        ? {
+            bookingList: result,
+            count: Math.ceil(count / limit),
+            message: 'Get all your bookings successful',
+          }
         : { message: 'Not found any bookings!' };
     } catch (error) {
       throw new Error(error);
