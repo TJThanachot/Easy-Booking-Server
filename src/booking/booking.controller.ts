@@ -35,9 +35,9 @@ export class BookingController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('your-booking')
-  async findAll(@Request() req: any) {
-    return this.bookingService.findAll(req.user.userId);
+  @Get('your-booking/:pageNumber')
+  async findAll(@Request() req: any, @Param() param: any) {
+    return this.bookingService.findAll(req.user.userId, param.pageNumber);
   }
 
   @UseGuards(JwtAuthGuard)

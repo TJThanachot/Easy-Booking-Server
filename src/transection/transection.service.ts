@@ -4,12 +4,14 @@ import { UpdateTransectionDto } from './dto/update-transection.dto';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Transections } from './entities/transection.entity';
+import { Bookings } from 'src/booking/entities/booking.entity';
 
 @Injectable()
 export class TransectionService {
   constructor(
     @InjectRepository(Transections)
     private transectionRepository: Repository<Transections>,
+    @InjectRepository(Bookings) private bookingRopository: Repository<Bookings>,
   ) {}
 
   private readonly relations: string[] = [
@@ -29,8 +31,19 @@ export class TransectionService {
       created_at: new Date(),
       updated_at: new Date(),
     };
+    console.log(body);
     try {
       const result = await this.transectionRepository.insert(body);
+      if (result.raw.affectedRows > 0) {
+        const changeBookingStatus = await this.bookingRopository.findOneBy({
+          id: body.booking_id,
+        });
+        if (changeBookingStatus) {
+          changeBookingStatus.status_lookup_id = 7;
+          changeBookingStatus.updated_at = new Date();
+          await this.bookingRopository.save(changeBookingStatus);
+        }
+      }
       return result.raw.affectedRows > 0
         ? { message: 'Created a trasection successfully.' }
         : { message: 'Created a transection not success.' };
