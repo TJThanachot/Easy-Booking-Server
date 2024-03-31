@@ -12,14 +12,16 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async validate(@Request() req: any, @Res({ passthrough: true }) res: any) {
-    const { accessToken } = await this.authService.login(req.user);
-    if (accessToken) {
+    const result = await this.authService.login(req.user);
+    if (result?.accessToken) {
+      const accessToken = result.accessToken;
+
       res.cookie('access_token', accessToken, {
         httpOnly: true,
       });
-      res.json({ message: 'Successfully logged in', accessToken });
+      res.json({ message: 'Successfully logged in', accessToken: accessToken });
     } else {
-      return null;
+      return { message: result };
     }
   }
 

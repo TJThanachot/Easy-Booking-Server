@@ -63,7 +63,7 @@ export class BookingService {
         booking.price_per_night,
       ); // comfrom funcUtils
       const result = await this.bookingsRepository.insert(booking);
-      if (result.raw.affectedRows > 0) {
+      if (result.raw.length > 0) {
         return {
           message: `Booking the lord room saved successfully and your room number is ${51}.`,
         };
@@ -103,7 +103,7 @@ export class BookingService {
         await this.roomsRepository.save(findAvailableRoom);
       }
       const result = await this.bookingsRepository.insert(booking);
-      if (result.raw.affectedRows > 0) {
+      if (result.raw.length > 0) {
         return {
           message: `Booking saved successfully and your room is ${roomName}.`,
         };

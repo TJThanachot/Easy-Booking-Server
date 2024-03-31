@@ -29,14 +29,18 @@ export class AuthService {
   }
 
   async login(user: any) {
-    const payload = {
-      email: user.email,
-      sub: user.userId,
-      roleId: user.roleId,
-    };
-    return {
-      accessToken: this.jwtService.sign(payload),
-    };
+    if (user === 'Invalid Email' || user === 'Invalid Password') {
+      return user;
+    } else {
+      const payload = {
+        email: user.email,
+        sub: user.userId,
+        roleId: user.roleId,
+      };
+      return {
+        accessToken: this.jwtService.sign(payload),
+      };
+    }
   }
 
   async googleLogin(req: any): Promise<any> {
