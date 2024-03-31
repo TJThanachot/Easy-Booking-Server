@@ -20,7 +20,9 @@ export class UsersService {
       user.password = await bcrypt.hash(user.password, salt);
       user.created_at = new Date();
       user.updated_at = new Date();
+      user.phone_number = user.phone;
     }
+
     try {
       await this.usersRepository.insert(user);
       return { message: 'Register success' };

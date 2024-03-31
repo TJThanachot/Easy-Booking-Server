@@ -31,10 +31,11 @@ export class TransectionService {
       created_at: new Date(),
       updated_at: new Date(),
     };
-    console.log(body);
+
     try {
       const result = await this.transectionRepository.insert(body);
-      if (result.raw.affectedRows > 0) {
+
+      if (result.raw.length > 0) {
         const changeBookingStatus = await this.bookingRopository.findOneBy({
           id: body.booking_id,
         });
@@ -44,7 +45,7 @@ export class TransectionService {
           await this.bookingRopository.save(changeBookingStatus);
         }
       }
-      return result.raw.affectedRows > 0
+      return result.raw.length > 0
         ? { message: 'Created a trasection successfully.' }
         : { message: 'Created a transection not success.' };
     } catch (error) {

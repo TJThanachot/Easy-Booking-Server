@@ -30,7 +30,7 @@ export class Users {
   role: Roles;
   // end FK role_id
 
-  @Column({ length: 30 })
+  @Column({ length: 60 })
   password: string;
 
   @Column({ length: 30 })
