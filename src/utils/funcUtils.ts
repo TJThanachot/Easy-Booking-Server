@@ -12,8 +12,9 @@ export const calTotalPrice = (
   checkOut: Date,
   pricePerNight: number,
 ): number => {
-  return (
-    Math.abs(new Date(checkOut).getDate() - new Date(checkIn).getDate()) *
-    pricePerNight
+  return Math.abs(
+    ((new Date(checkOut).getTime() - new Date(checkIn).getTime()) /
+      (1000 * 60 * 60 * 24)) *
+      pricePerNight,
   );
 };

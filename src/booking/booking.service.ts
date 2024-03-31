@@ -20,6 +20,60 @@ export class BookingService {
     private roomsRepository: Repository<Rooms>,
   ) {}
 
+  async findAllTheLordRoomBooked(): Promise<any> {
+    const today = new Date();
+    today.setHours(7, 0, 0, 0);
+    try {
+      const result = await this.bookingsRepository.find({
+        where: {
+          room_id: 51, // 51 is the lord room
+          check_in: MoreThanOrEqual(today),
+        },
+        select: {
+          check_in: true,
+          check_out: true,
+        },
+        order: { check_in: 'ASC' },
+      });
+      return result
+        ? {
+            checkInCheckOutList: result,
+            message: 'Get all the lord room booked successful',
+          }
+        : { message: 'Not found any the lord room was booked!' };
+    } catch (error) {
+      throw new Error(error);
+    }
+  }
+
+  async createTheLordBooking(
+    userId: string,
+    createBookingDto: CreateBookingDto,
+  ): Promise<any> {
+    const booking = createBookingDto;
+    try {
+      booking.user_id = userId;
+      booking.created_at = new Date();
+      booking.updated_at = new Date();
+      booking.status_lookup_id = 5; //status 5 booked, 6 draft and 7 close
+      booking.room_id = 51; // 51 is the lord room
+      booking.total_price = calTotalPrice(
+        booking.check_in,
+        booking.check_out,
+        booking.price_per_night,
+      ); // comfrom funcUtils
+      const result = await this.bookingsRepository.insert(booking);
+      if (result.raw.affectedRows > 0) {
+        return {
+          message: `Booking the lord room saved successfully and your room number is ${51}.`,
+        };
+      }
+      return { message: 'Booking the lord room saved unsuccessfully.' };
+    } catch (error) {
+      return { message: 'Error saving booking the lord room:' + error };
+    }
+  }
+
   async create(
     userId: string,
     createBookingDto: CreateBookingDto,
@@ -152,6 +206,7 @@ export class BookingService {
     }
   }
 
+  // for landing page------------------------------------------------
   async findRoomTypes(): Promise<any> {
     try {
       const result: any = await this.roomTypesRepository.find();
